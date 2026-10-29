@@ -362,14 +362,17 @@
   (function () {
     if (window.parent === window) return;
     function sendHeight() {
+      // Measure the timeline itself, not the document: inside an iframe the document
+      // is never shorter than the iframe, so it would never report a smaller height.
+      var tl = document.querySelector(".tl");
       window.parent.postMessage(
-        { type: "mca-timeline-height", height: document.documentElement.scrollHeight },
+        { type: "mca-timeline-height", height: Math.ceil(tl.getBoundingClientRect().height) },
         "*"
       );
     }
     window.addEventListener("load", sendHeight);
     if ("ResizeObserver" in window) {
-      new ResizeObserver(sendHeight).observe(document.body);
+      new ResizeObserver(sendHeight).observe(document.querySelector(".tl"));
     } else {
       window.addEventListener("resize", sendHeight);
     }
