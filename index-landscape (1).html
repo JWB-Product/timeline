@@ -51,8 +51,10 @@
 
   /* Horizontal layout (desktop) */
   .tl-track {
+    --above: 270px;
+    --below: 230px;
     position: relative;
-    height: 540px;
+    height: calc(var(--above) + var(--below));
     margin: 0 16px;
   }
 
@@ -61,7 +63,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 50%;
+    top: var(--above);
     height: 4px;
     margin-top: -2px;
     background: var(--forest-green);
@@ -77,7 +79,7 @@
 
   .tl-tick {
     position: absolute;
-    top: 50%;
+    top: var(--above);
     left: calc(var(--pos) * 1%);
     transform: translateX(-50%);
     padding-top: 12px;
@@ -101,7 +103,7 @@
 
   .tl-item {
     position: absolute;
-    top: 50%;
+    top: var(--above);
     left: calc(var(--pos) * 1%);
     width: 0;
     height: 0;
@@ -218,13 +220,37 @@
   @media (max-width: 960px) {
     .tl-hint { display: block; }
   }
+
+  /* Compact landscape for phones: shorter track, smaller cards */
+  @media (max-width: 720px) {
+    .tl { padding: 4px 8px; }
+    .tl-scroll .tl-track {
+      --above: 185px;
+      --below: 175px;
+      min-width: 680px;
+      margin: 0 12px;
+    }
+    .tl-card { width: 150px; padding: 8px 10px; }
+    .tl-card--small { min-width: 100px; max-width: 150px; padding: 6px 10px; }
+    .tl-stem { height: 24px; }
+    .is-above .tl-card { bottom: 34px; }
+    .is-below .tl-card { top: 34px; }
+    .tl-year { font-size: 0.75rem; }
+    .tl-label { font-size: 0.9375rem; }
+    .tl-card--small .tl-label { font-size: 0.875rem; }
+    .tl-sub { font-size: 0.75rem; margin-top: 4px; }
+    .tl-card img { height: 64px; }
+    .tl-card--image { padding: 0; }
+    .tl-card--image .tl-body { padding: 6px 10px 8px; }
+    .tl-tick { font-size: 0.6875rem; padding-top: 10px; }
+  }
 </style>
 </head>
 <body>
 <section class="tl" aria-labelledby="tl-title">
   <h2 id="tl-title" class="visually-hidden">Timeline 2026 to 2060</h2>
 
-  <p class="tl-hint" id="tl-hint">Scroll sideways to see the full timeline &rarr;.</p>
+  <p class="tl-hint" id="tl-hint">Scroll sideways to see the full timeline.</p>
   <div class="tl-scroll" tabindex="0" role="region" aria-labelledby="tl-title" aria-describedby="tl-hint">
   <div class="tl-track">
     <!-- Axis year markers: decorative, hidden from screen readers -->
@@ -308,6 +334,29 @@
 </section>
 
 <script>
+  // Sizes the space above and below the line to the tallest card on each side,
+  // so there is no empty band at the top or bottom whatever the content.
+  (function () {
+    var track = document.querySelector(".tl-track");
+    var GAP = 12;
+    function tallest(side) {
+      var max = 0;
+      track.querySelectorAll(".is-" + side + " .tl-card").forEach(function (card) {
+        var offset = parseFloat(getComputedStyle(card)[side === "above" ? "bottom" : "top"]) || 0;
+        max = Math.max(max, card.offsetHeight + offset);
+      });
+      return max;
+    }
+    function fit() {
+      track.style.setProperty("--above", (tallest("above") + GAP) + "px");
+      track.style.setProperty("--below", (Math.max(tallest("below"), 30) + GAP) + "px");
+    }
+    fit();
+    window.addEventListener("load", fit);
+    window.addEventListener("resize", fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  })();
+
   // Only needed for the iframe embed: tells the parent page how tall this content is,
   // so the iframe resizes when the layout switches between horizontal and vertical.
   (function () {
