@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timeline 2026 to 2060</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
+<!-- Brand Typekit kit. If it is domain-locked to your WP domains it will not load on github.io and headings fall back to Open Sans. -->
+<link rel="stylesheet" href="https://use.typekit.net/lkt5fce.css">
+<style>
+  :root {
+    --park-green: #007D00;
+    --dark-green: #13301B;
+    --forest-green: #1D4F2B;
+    --light-green: #D9EDD9;
+    --cream: #F4F0E8;
+    --almost-black: #1F1F1F;
+    --muted: #4A4A4A;
+    --border: #D8D2C4;
+    --card-width: 190px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: transparent;
+  }
+
+  body {
+    font-family: "Open Sans", Arial, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    color: var(--almost-black);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .tl {
+    padding: 8px 16px;
+  }
+
+  /* Horizontal layout (desktop) */
+  .tl-track {
+    position: relative;
+    height: 560px;
+    margin: 0 16px;
+  }
+
+  .tl-track::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 4px;
+    margin-top: -2px;
+    background: var(--forest-green);
+    border-radius: 2px;
+  }
+
+  .tl-ticks,
+  .tl-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tl-tick {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--pos) * 1%);
+    transform: translateX(-50%);
+    padding-top: 12px;
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+
+  .tl-tick::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 2px;
+    height: 12px;
+    margin-left: -1px;
+    background: var(--forest-green);
+  }
+
+  /* Hide a tick's year when a below-the-line stem runs through it */
+  .tl-tick--covered { color: transparent; }
+
+  .tl-item {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--pos) * 1%);
+    width: 0;
+    height: 0;
+  }
+
+  .tl-dot {
+    position: absolute;
+    z-index: 2;
+    left: -10px;
+    top: -10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid var(--park-green);
+  }
+
+  .tl-stem {
+    position: absolute;
+    left: -1px;
+    width: 2px;
+    height: 40px;
+    background: var(--park-green);
+  }
+
+  .is-above .tl-stem { bottom: 10px; }
+  .is-below .tl-stem { top: 10px; }
+
+  .tl-card {
+    position: absolute;
+    width: var(--card-width);
+    transform: translateX(-50%);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .is-above .tl-card { bottom: 50px; }
+  .is-below .tl-card { top: 50px; }
+
+  /* Keep the first and last cards inside the track */
+  .is-start .tl-card { transform: translateX(-14px); }
+  .is-end .tl-card { transform: translateX(calc(-100% + 14px)); }
+
+  .tl-year {
+    display: block;
+    font-family: "AvenirPro85Heavy", "Open Sans", Arial, sans-serif;
+    font-weight: normal;
+    font-size: 0.875rem;
+    color: var(--park-green);
+  }
+
+  .tl-label {
+    margin: 2px 0 0;
+    font-family: "AvenirPro65Medium", "Open Sans", Arial, sans-serif;
+    font-weight: normal;
+    font-size: 1.125rem;
+    line-height: 1.3;
+    color: var(--dark-green);
+  }
+
+  .tl-card--small {
+    padding: 8px 12px;
+    width: auto;
+    min-width: 120px;
+    max-width: var(--card-width);
+  }
+
+  .tl-card--small .tl-label { font-size: 1rem; }
+
+  .tl-sub {
+    margin: 6px 0 0;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  .tl-card--image { padding: 0; overflow: hidden; }
+  .tl-card--image .tl-body { padding: 10px 14px 12px; }
+
+  .tl-card img {
+    display: block;
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    background: var(--light-green);
+  }
+
+  /* Vertical layout (narrow screens) */
+  @media (max-width: 720px) {
+    .tl-track {
+      height: auto;
+      margin: 0;
+    }
+
+    .tl-track::before {
+      top: 0;
+      bottom: 0;
+      left: 8px;
+      right: auto;
+      width: 4px;
+      height: auto;
+      margin: 0;
+    }
+
+    .tl-ticks,
+    .tl-stem { display: none; }
+
+    .tl-item {
+      position: relative;
+      top: auto;
+      left: auto;
+      width: auto;
+      height: auto;
+      padding: 0 0 20px 40px;
+    }
+
+    .tl-item:last-child { padding-bottom: 0; }
+
+    .tl-dot { left: 0; top: 14px; }
+
+    .tl-card,
+    .is-start .tl-card,
+    .is-end .tl-card {
+      position: static;
+      transform: none;
+      width: auto;
+      max-width: 420px;
+    }
+
+    .tl-card img { height: 160px; }
+  }
+</style>
+</head>
+<body>
+<section class="tl" aria-labelledby="tl-title">
+  <h2 id="tl-title" class="visually-hidden">Timeline 2026 to 2060</h2>
+
+  <div class="tl-track">
+    <!-- Axis year markers: decorative, hidden from screen readers -->
+    <ul class="tl-ticks" aria-hidden="true">
+      <li class="tl-tick" style="--pos: 0">2026</li>
+      <li class="tl-tick" style="--pos: 11.76">2030</li>
+      <li class="tl-tick" style="--pos: 26.47">2035</li>
+      <li class="tl-tick" style="--pos: 41.18">2040</li>
+      <li class="tl-tick" style="--pos: 55.88">2045</li>
+      <li class="tl-tick tl-tick--covered" style="--pos: 70.59">2050</li>
+      <li class="tl-tick" style="--pos: 85.29">2055</li>
+      <li class="tl-tick" style="--pos: 100">2060</li>
+    </ul>
+
+    <!--
+      --pos = (year - 2026) / 34 * 100
+      Alternate is-above / is-below so neighbouring cards do not collide.
+      Add is-start to the first item and is-end to the last.
+    -->
+    <ol class="tl-items">
+
+      <!-- Small label -->
+      <li class="tl-item is-above is-start" style="--pos: 0">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <span class="tl-stem" aria-hidden="true"></span>
+        <div class="tl-card tl-card--small">
+          <time class="tl-year" datetime="2026">2026</time>
+          <h3 class="tl-label">Programme starts</h3>
+        </div>
+      </li>
+
+      <!-- Label with sub text -->
+      <li class="tl-item is-below" style="--pos: 17.65">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <span class="tl-stem" aria-hidden="true"></span>
+        <div class="tl-card">
+          <time class="tl-year" datetime="2032">2032</time>
+          <h3 class="tl-label">First milestone</h3>
+          <p class="tl-sub">One or two short lines explaining what happens at this point.</p>
+        </div>
+      </li>
+
+      <!-- Label with image -->
+      <li class="tl-item is-above" style="--pos: 41.18">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <span class="tl-stem" aria-hidden="true"></span>
+        <div class="tl-card tl-card--image">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 220'%3E%3Crect width='380' height='220' fill='%23D9EDD9'/%3E%3Ccircle cx='300' cy='60' r='26' fill='%23FFCF23'/%3E%3Cpath d='M0 170 Q90 110 190 150 T380 130 V220 H0Z' fill='%2340A832'/%3E%3Cpath d='M0 195 Q120 150 240 185 T380 175 V220 H0Z' fill='%231D4F2B'/%3E%3C/svg%3E"
+               alt="Illustration of green hills under a yellow sun" width="380" height="220">
+          <div class="tl-body">
+            <time class="tl-year" datetime="2040">2040</time>
+            <h3 class="tl-label">Milestone with image</h3>
+          </div>
+        </div>
+      </li>
+
+      <!-- Label with sub text -->
+      <li class="tl-item is-below" style="--pos: 70.59">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <span class="tl-stem" aria-hidden="true"></span>
+        <div class="tl-card">
+          <time class="tl-year" datetime="2050">2050</time>
+          <h3 class="tl-label">Interim target</h3>
+          <p class="tl-sub">Short supporting text, kept to around 15 words so cards stay a similar size.</p>
+        </div>
+      </li>
+
+      <!-- Small label -->
+      <li class="tl-item is-above is-end" style="--pos: 100">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <span class="tl-stem" aria-hidden="true"></span>
+        <div class="tl-card tl-card--small">
+          <time class="tl-year" datetime="2060">2060</time>
+          <h3 class="tl-label">Target date</h3>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</section>
+
+<script>
+  // Only needed for the iframe embed: tells the parent page how tall this content is,
+  // so the iframe resizes when the layout switches between horizontal and vertical.
+  (function () {
+    if (window.parent === window) return;
+    function sendHeight() {
+      window.parent.postMessage(
+        { type: "mca-timeline-height", height: document.documentElement.scrollHeight },
+        "*"
+      );
+    }
+    window.addEventListener("load", sendHeight);
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(sendHeight).observe(document.body);
+    } else {
+      window.addEventListener("resize", sendHeight);
+    }
+  })();
+</script>
+</body>
+</html>
